@@ -5,4 +5,11 @@ homework-1/html/
 
 homework-1/pdf/
 
+# DS Store
 .DS_Store
+*/DS_Store
+
+homework-2/Fashion-MNIST/code/__pycache__/*
+homework-2/Fashion-MNIST/__pycache__/*
+
+homework-2/Fashion-MNIST/*log*
