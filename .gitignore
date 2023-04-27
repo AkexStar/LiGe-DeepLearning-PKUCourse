@@ -13,3 +13,4 @@ homework-2/Fashion-MNIST/code/__pycache__/*
 homework-2/Fashion-MNIST/__pycache__/*
 
 homework-2/Fashion-MNIST/*log*
+.vscode/settings.json
