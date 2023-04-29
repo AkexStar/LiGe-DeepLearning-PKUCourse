@@ -13,10 +13,11 @@ class CNN(nn.Module):
     def __init__(self):
         
         super().__init__()
+        # Create the convolutional layers
         self.layers = nn.Sequential(
-                nn.Conv2d(1, 24, 5, 1, 2),
+                nn.Conv2d(1, 24, 5, 1, 2), # in_channels, out_channels, kernel_size, stride, padding 
                 nn.ReLU(),
-                nn.Conv2d(24, 48, 5, 2, 2),
+                nn.Conv2d(24, 48, 5, 2, 2), # 输入通道数，输出通道数，卷积核大小，步长，padding
                 nn.ReLU(),
                 nn.Conv2d(48, 64, 5, 3, 2),
                 nn.ReLU(),
