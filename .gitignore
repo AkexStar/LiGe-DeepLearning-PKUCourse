@@ -6,6 +6,8 @@ homework-*/html/
 homework-*/pdf/
 
 homework-*/checkpoints
+homework-*/attack_data
+
 .DS_Store
 */DS_Store
 
