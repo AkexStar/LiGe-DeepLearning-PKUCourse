@@ -14,5 +14,6 @@ homework-*/attack_data
 homework-2/Fashion-MNIST/code/__pycache__/*
 homework-2/Fashion-MNIST/__pycache__/*
 homework-2/Fashion-MNIST/*log*
+homework-2/__pycache__
 
 .vscode/settings.json
