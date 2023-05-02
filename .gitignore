@@ -17,3 +17,5 @@ homework-2/Fashion-MNIST/*log*
 homework-2/__pycache__
 
 .vscode/settings.json
+
+homework-2/code/__pycache__/
