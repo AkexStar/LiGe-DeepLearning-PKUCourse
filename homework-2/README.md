@@ -1,15 +1,16 @@
-# 第二次作业
+# 深度学习技术与应用-第二次作业
 
 - 李锦韬 2201213292
 - 作业内容简介：训练 `Fashion-MNIST` 数据集上的分类模型；进行定向白盒攻击（I-FGSM）；进行定向黑盒攻击（样本迁移、MCMC）；简单对抗训练
 - 若样本的真实标签为 `label` ，攻击方向为使分类器错判为 `(label + 1) % 10`
-- 本项目构成情况：
-  - ResNet34.ipynb 分类器构建和训练评估
-  - white-attack.ipynb 白盒攻击
-  - black-attack.ipynb 黑盒攻击
-  - adversarial-train.ipynb 对抗训练
-
----
+- 本项目基本情况摘要：
+  - **ResNet34.ipynb 分类器构建和训练评估：** 最终选用模型在测试集上精度为 $93.71\%$
+  - **white-attack.ipynb 白盒攻击：** 基于I-FGSM算法，$\epsilon$ 取 $0.02$ ，攻击成功率 $14.04\%$
+  - **black-attack.ipynb 黑盒攻击：** 对课程CNN模型采用样本迁移和MCMC采样攻击，攻击成功率分别为 $7.9\%$ 和 $10.4\%$ ；对项目ResNet模型采用MCMC采样攻击攻击，攻击成功率为 $9.73\%$
+  - **adversarial-train.ipynb 对抗训练：**
+- 其他项目支撑文件：
+  - ResNet34_draft.ipynb 尝试不同的超参数和数据预处理方式训练分类器模型
+  - 
 
 ## 训练分类器
 
@@ -27,56 +28,85 @@
 - 作业所有实验采用精度为 $93.71\%$ 的模型进行测试
 - 模型文件路径为 `./model/checkpoint-60-93.71.pt`
 
-以下为分类器训练情况：
+以下为分类器训练情况以及类器在测试集上的混淆矩阵：
 
-<div align=left>
-  <img src="./images/ResNet.png"  height="300" />
+<div align=center>
+  <img src="./images/ResNet.png"  height="250" /> <img src="./images/ResNet-confused-matrix.png"  height="250" />
 </div>
-
-
 
 ## 白盒攻击
 
-- 使用迭代的FGSM，逐步修改测试图像，每次给图像变动 $\varepsilon \times \operatorname{Sign}\left( \nabla_{x^{(n)}}\left({x}^{(n)}, \hat{y} | C \right) \right)$ ，其中 $\epsilon$ 为参数
+- 白盒攻击在本项目构建的ResNet34分类器上进行，算法采用定向的I-FGSM。该算法相当于使用迭代的FGSM，逐步修改测试图像，根据当前图像和目标类别之间的梯度，每次给图像变动 $\varepsilon \times \operatorname{Sign}\left( \nabla_{x^{(n)}}\left({x}^{(n)}, \hat{y} | C \right) \right)$ ，其中 $\epsilon$ 为参数。由于是定向攻击，给图像施加的扰动方向应该是梯度的反方向。
+- 本项目实验了许多不同的 $\epsilon$ 取值，在 $[.01, .02, .03, .1, .2, .25, .3, .5] $ 尺度上探索，确定攻击成功率随 $\epsilon$ 的大致分布情况，并进一步在 $[.001, .002, .003, .004, .005, .006, .007, .008, .009]$ 进行了更局部的实验。
+- 最终确定 $\epsilon=0.02$ 时，所带来的图像变化较少，攻击成功率也最高，达到 $14.04\%$ 。
+- 本项目定义的攻击成功率计算方式为：基于I-FGSM算法，在迭代100次以内，扰动后的测试图像被分类器判断为目标类别的数量占所有被分类器正确分类的测试图像的比例。
 
-![Attack Success Rate vs Epsilon 0.01-0.5](./images/White%20Attack%20Success%20Rate%20vs%20Epsilon%200.01-0.5.png)
+以下为在数量为10000的测试集上展开的不同 $\epsilon$ 取值对应攻击成功率的实验：
 
-- 经过实验测试，本项目选用$\epsilon=0.05$
-- 从分类正确的测试集上随机抽取2000张图像，攻击成功率为 $15.7\%$
-- 以下为部分攻击成功的样本图片，图片两两一组，左侧的为原始图像，右侧的为攻击生成图像
+<div align=center>
+  <img src="./images/White%20Attack%20Success%20Rate%20vs%20Epsilon%200.001-0.01.png"  height="300" />  <img src="./images/White%20Attack%20Success%20Rate%20vs%20Epsilon%200.01-0.5.png"  height="300" />
+</div>
 
-![攻击成功样本](./images/white-attack-sample1.png "Eps取0.05的白盒成功攻击样本对比")
+以下为部分攻击成功的样本图片，图片两两一组，左侧的为原始图像，右侧的为白盒攻击图像。可见 $\epsilon$ 取 $0.02$ 白盒攻击对图像的改动很微小，而且主要体现为图像亮度/对比度的变化，使得分类器模型错判。特别是在运动鞋->袋子的定向攻击上，白盒攻击消除了鞋子部分的局部纹理特征，使分类器失效。
+
+<div align=center>
+  <img src="./images/white-attack-sample1.png"  width="500" />
+</div>
+
 
 ## 黑盒攻击
 
-### 使用样本迁移法对课程CNN模型攻击
+### （1）使用样本迁移法对课程CNN模型攻击
 
-- 基于I-FGSM算法，梯度在本项目的ResNet34上计算，判断是否攻击成功在封闭的CNN模型上进行
-- 本项目同样实验了许多不同的 $\epsilon$ 取值，考虑到扰动导致的图像变化与攻击成功率之间的取舍，本项目最终选用 $\epsilon=0.1$，攻击成功率为 $7.9\%$
+- 基于I-FGSM算法，梯度在本项目的ResNet34上计算，判断是否攻击成功在封闭的课程CNN模型上进行。
+- 本部分类似于白盒攻击同样实验了许多不同的 $\epsilon$ 取值，其规律与白盒攻击不同，$\epsilon$ 越大攻击成功率越高。
+- 但是，考虑到扰动导致的图像变化与攻击成功率之间的取舍，本项目最终选用 $\epsilon=0.05$，攻击成功率为 $7.9\%$ 。
+- 如果一味提高扰动步长，虽然攻击成功率有提高，但是对图像本身的扰动已经较大，不符合黑盒攻击初衷。
 
-![Black Attack Success Rate vs Epsilon 0.01-0.5](./images/Black%20Attack%20Success%20Rate%20vs%20Epsilon%200.01-0.5.png)
+<div align=center>
+  <img src="./images/Black%20Attack%20Success%20Rate%20vs%20Epsilon%200.01-0.5.png"  height="300" />
+</div>
 
-- 如果取0.5，虽然攻击成功率较高，但是对图像本身的扰动已经较大，不符合黑盒攻击初衷，而取0.1的效果比较理想
-- 以下为 $\epsilon=0.5$ 的部分成功攻击样本，图片两两一组，左侧的为原始图像，右侧的为攻击生成图像
+以下为 $\epsilon=0.5$ 的部分成功攻击样本，可见部分图像已经被扰动的破碎，图上有许多马赛克图斑，甚至部分图像已经不具有原本图像上具备的语义
 
-![eps=0.5样本](./images/black-attack-sample1.png)
+<div align=center>
+  <img src="./images/black-attack-sample1.png"  width="500" />
+</div>
 
-- 以下为 $\epsilon=0.1$ 的部分成功攻击样本，图片两两一组，左侧的为原始图像，右侧的为攻击生成图像
+以下为 $\epsilon=0.1$ 的部分成功攻击样本，整体上对图片的改动不是非常大
 
-![eps=0.1样本](./images/black-attack-sample2.png)
+<div align=center>
+  <img src="./images/black-attack-sample2.png"  width="500" />
+</div>
 
-### 基于MCMC采样对课程CNN模型攻击
+### （2）基于MCMC采样对课程CNN模型攻击
+
+- MCMC采样算法每次在图像上施加正态扰动，迭代进行直到分类器将图像分错成攻击目标类别。
+- 本项目在课程提供的1000个测试样本上开展测试，单张图像攻击MCMC采样循环最高限制在300次，每次施加的扰动符合以原图为中心的正态分布，其分布的标准差为 $0.03$ （数据输入前经过标准化，大约相当于灰度值7以内），使用 $f1-Loss<0.05$ 限制扰动前后的图像变化差距，最终攻击成功率为 $10.4\%$
+
+以下为部分成功攻击样本，可见MCMC黑盒攻击对样本的改动不大，给图像增加相当的随机噪声使分类器错判
+
+<div align=center>
+  <img src="./images/black-attack-sample3.png"  width="500" />
+</div>
+
+
+### （3）基于MCMC采样对项目ResNet模型攻击
 
 - 每次在图像上增加正态扰动，直到分类器分错成目标攻击类别
-- 在1000个课程提供的测试样本上攻击成功率为 $10.4\%$
+- 随机抽取了1500个ResNet可以正确分类测试集样本，其他控制参数与对CNN模型攻击时保持一致，最终攻击成功率为 $9.73\%$
 
-![MCMC采样对CNN模型攻击](./images/black-attack-sample3.png)
+以下为部分成功攻击样本，可见MCMC黑盒攻击对样本的改动不大
 
-### 基于MCMC采样对本项目ResNet模型攻击
+<div align=center>
+  <img src="./images/black-attack-sample4.png"  width="500" />
+</div>
 
-- 每次在图像上增加正态扰动，直到分类器分错成目标攻击类别
-- 在1500个测试集样本上的攻击成功率为 $9.73\%$
-
-![MCMC采样对NesNet模型攻击](./images/black-attack-sample4.png)
 
 ## 对抗训练
+
+### (1)
+
+### (2)
+
+### (3)
