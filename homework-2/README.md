@@ -1,13 +1,13 @@
-# 深度学习技术与应用-第二次作业
+# 图像分类模型的对抗攻击和对抗训练
 
-- 李锦韬 2201213292
-- 作业内容简介：训练[Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist)数据集上的分类模型；进行定向白盒攻击（I-FGSM）；进行定向黑盒攻击（样本迁移、MCMC）；简单对抗训练
+- 作业要求：见[homework-2](./homework-2.pdf)文件的说明，对应GitHub连接为[ADVERSARIAL ATTACK & ADVERSARIAL TRAINING](https://github.com/LC-John/Fashion-MNIST)
+- 项目内容简介：训练[Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist)数据集上的分类模型；进行定向白盒攻击（I-FGSM）；进行定向黑盒攻击（样本迁移、MCMC）；简单对抗训练
 - 若样本的真实标签为 label ，攻击方向为使分类器错判为 (label + 1) % 10
 - 本项目主要代码情况和结论摘要：
   - `./code/ResNet34.ipynb` **分类器构建和训练评估：** 基于ResNet34结构进行训练，最终选用的版本在测试集上精度为 $93.71\%$
   - `./code/white-attack.ipynb` **白盒攻击：** 基于I-FGSM算法，$\epsilon$ 取 $0.02$ ，对项目ResNet模型攻击成功率为 $14.37\%$
   - `./code/black-attack.ipynb` **黑盒攻击：** 对课程CNN模型采用样本迁移和MCMC采样攻击，攻击成功率分别为 $7.9\%$ 和 $10.4\%$ ；对项目ResNet模型采用MCMC采样攻击攻击，攻击成功率为 $9.73\%$
-  - `./code/adversarial-train.ipynb` **对抗训练：** 对项目初始ResNet模型在训练集上进行白盒攻击获取对抗样本，扩充训练集重新训练得到新分类器，新模型在测试集上的精度为 $92.10\%$ ，白盒攻击成功率为 $5.1\%$ ，黑盒攻击成功率为 $9.67\%$ 
+  - `./code/adversarial-train.ipynb` **对抗训练：** 对项目初始ResNet模型在训练集上进行白盒攻击获取对抗样本，扩充训练集重新训练得到新分类器，新模型在测试集上的精度为 $92.10\%$ ，白盒攻击成功率为 $5.1\%$ ，黑盒攻击成功率为 $9.67\%$
 - 项目内图像文件说明：
   - `./images/White-N*.png` 白盒攻击ResNet模型中的成功攻击样本
   - `./images/Black-N*.png` 黑盒攻击CNN模型中的成功攻击样本
@@ -62,7 +62,6 @@
   <img src="./images/white-attack-sample1.png"  width="500" />
 </div>
 
-
 ## 黑盒攻击
 
 ### （1）使用样本迁移法对课程CNN模型攻击
@@ -98,7 +97,6 @@
   <img src="./images/black-attack-sample3.png"  width="500" />
 </div>
 
-
 ### （3）基于MCMC采样对项目ResNet模型攻击
 
 - 每次在图像上增加正态扰动，直到分类器分错成目标攻击类别。
@@ -109,7 +107,6 @@
 <div align=center>
   <img src="./images/black-attack-sample4.png"  width="500" />
 </div>
-
 
 ## 对抗训练
 
@@ -139,27 +136,25 @@
   <img src="./images/ResNet-new-confused-matrix.png"  height="250" />
 </div>
 
-
 ### (3)对新分类器进行白盒攻击与黑盒攻击从而比较新老异同
 
 - 对比新旧分类器在测试集上的分类精度
 - 在新分类器上重复之前对原始分类器的白盒攻击，对比相同的白盒攻击在新旧分类器上的攻击成功率
 - 在新分类器上重复之前对原始分类器的黑盒攻击，对比相同的黑盒攻击在新旧分类器上的攻击成功率
 
+|                分类器                | 测试集精度`<br>`（最佳值） | 白盒攻击成功率`<br>`（I-FSGM） | 黑盒攻击成功率`<br>`（MCMC） |
+| :----------------------------------: | :--------------------------: | :------------------------------: | :----------------------------: |
+|              原始分类器              |         $93.74\%$         |           $14.37\%$           |           $9.73\%$           |
+| 新分类器`<br>`（增加对抗样本训练） |         $92.10\%$         |            $5.1\%$            |           $9.67\%$           |
 
-| 分类器 | 测试集精度<br>（最佳值） | 白盒攻击成功率<br>（I-FSGM） | 黑盒攻击成功率<br>（MCMC）|
-| :-: | :-: | :-: | :-: |
-| 原始分类器 | $93.74\%$ | $14.37\%$ | $9.73\%$ |
-| 新分类器<br>（增加对抗样本训练） | $92.10\%$ | $5.1\%$ | $9.67\%$ |
-
- - 以下为新分类器在测试集上白盒攻击中成功的样本：
+- 以下为新分类器在测试集上白盒攻击中成功的样本：
 
 <div align=center>
   <img src="./images/white-attack-sample2.png"  width="500" />
 </div>
 
- - 以下为新分类器在测试集上黑盒攻击中成功的样本：
+- 以下为新分类器在测试集上黑盒攻击中成功的样本：
 
- <div align=center>
+<div align=center>
   <img src="./images/black-attack-sample5.png"  width="500" />
 </div>
