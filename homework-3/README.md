@@ -56,3 +56,17 @@
 - Format-1: 
     - 33402 images for Train and 13068 images for Test. 
     - Each image has several digits('label', 'left', 'top', 'width', 'height'). All files are png.
+<div align=center>
+    <img src='https://github.com/AkexStar/LiGe-DeepLearning-PKUCourse/assets/55226358/fcc444e8-df8f-4c22-ac6b-75a09cfe5b0e' width='50%'>
+</div>
+
+- 类别上标签’9’最少，’1’最多，标签类别分布不均匀
+- 图像上的数字目标框位置在纵轴上较为居中，在横轴上在中间两侧分布
+- 数字目标框基本为窄矩形，符合数字字体的特点
+- 数字目标框的长宽比近似于4.5：1
+
+<div align=center>
+    <img src='https://github.com/AkexStar/LiGe-DeepLearning-PKUCourse/assets/55226358/7fe0d98a-7cd1-4756-a517-bd14457f4027' width='40%'>   
+    <img src='https://github.com/AkexStar/LiGe-DeepLearning-PKUCourse/assets/55226358/fde5cd01-0597-41a7-a2a8-4a99b656532e' width='40%'>
+</div>
+
