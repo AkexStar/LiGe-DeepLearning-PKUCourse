@@ -1,7 +1,5 @@
 # Street View House Number Recognition 街景字符编码识别
 
-## 作业说明
-
 **数据集：**
 * [SVHN: Street View House Number](http://ufldl.stanford.edu/housenumbers/)，来源于谷歌街景门牌号码
 * 本次作业的目标数据集是其中的 Format 1 (Full Numbers: train.tar.gz, test.tar.gz , extra.tar.gz). 其中，train.tar.gz 为训练数据集，test.tar.gz为测试数据集。注：extra.tar.gz是附加数据集，建议不使用。
@@ -48,7 +46,6 @@
 - [GitHub：Street-View-House-Numbers-Detection](https://github.com/chia56028/Street-View-House-Numbers-Detection) YOLO
 
 ## 本项目实现
-- 具体内容见[PPT](./train-yolov5s.pptx)文件中的展示说明
 
 ### 数据集情况
 
@@ -57,7 +54,7 @@
     - 33402 images for Train and 13068 images for Test. 
     - Each image has several digits('label', 'left', 'top', 'width', 'height'). All files are png.
 <div align=center>
-    <img src='https://github.com/AkexStar/LiGe-DeepLearning-PKUCourse/assets/55226358/fcc444e8-df8f-4c22-ac6b-75a09cfe5b0e' width='50%'>
+    <img src='./ppt-img/1.png' width='100%'>
 </div>
 
 - 类别上标签’9’最少，’1’最多，标签类别分布不均匀
@@ -70,3 +67,36 @@
     <img src='https://github.com/AkexStar/LiGe-DeepLearning-PKUCourse/assets/55226358/fde5cd01-0597-41a7-a2a8-4a99b656532e' width='40%'>
 </div>
 
+### 具体过程
+
+- [PPT](./train-yolov5s-and-v5m.pptx)
+- 合适参数下YOLOv5s已经足够应对测试集（例如 --conf 0.6 --iou 0.3）
+- YOLOv5m更是不尝试特定预测参数，就已经可以达到100%的准确率，稳定度和鲁棒性更好
+
+<div align=center>
+    <img src='./ppt-img/2.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/3.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/4.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/5.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/6.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/7.png' width='80%'>
+</div>
+
+<div align=center>
+    <img src='./ppt-img/8.png' width='80%'>
+</div>
