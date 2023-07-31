@@ -1,0 +1,13 @@
+skorch==0.8
+torch
+torchvision
+matplotlib
+tqdm
+scikit-learn
+joblib
+h5py
+seaborn
+scikit-image
+imageio<=2.27
+jupyter-book
+sphinx-panels
